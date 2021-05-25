@@ -1,7 +1,10 @@
 const express = require("express");
+const router = require("./router");
 
 const app = express();
 const port = process.env["CHATBOT_ADMIN_PORT"] || 7777;
+
+app.use("/chatbot", router);
 
 app.get("/", async (req, res) => {
     res.status(200).send({message: "Admin interface running"});
