@@ -1,12 +1,9 @@
 class Bot{
 
-    cpt = 1;
-
     constructor(data){
         
         if(undefined != data.id){
-            this.id = cpt;
-            cpt++;
+            this.id = data.id;
         }
         if(undefined != data.name){
             this.name = data.name;
