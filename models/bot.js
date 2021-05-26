@@ -20,6 +20,12 @@ class Bot{
         if(undefined != data.interface){
             this.interface = data.interface;
         }
+        if(undefined != data.personality){
+            this.personality = data.personality;
+        }
+        if(undefined != data.status){
+            this.status = data.status;
+        }
         
     }
 
