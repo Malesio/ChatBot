@@ -7,6 +7,10 @@ app.get("/", async (req, res) => {
     res.status(200).send({message: "Chat interface running"});
 });
 
+app.post("/", async(req, res) => {
+    res.status(200).send([]);
+});
+
 module.exports = () => {
     app.listen(port, () => {
         console.log(`Chat interface listening on port ${port}`);
