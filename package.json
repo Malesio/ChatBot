@@ -22,6 +22,8 @@
   "homepage": "https://github.com/Malesio/ChatBot#readme",
   "dependencies": {
     "dotenv": "^9.0.2",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
+    "rivescript": "^2.1.0"
   }
 }
