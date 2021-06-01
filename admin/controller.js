@@ -21,7 +21,9 @@ class ChatbotController {
     }
 
     async getBots() {
-
+        const bots = await this.db.get("bots");
+        
+        return bots.map(e => new Bot(e));
     }
 
     static async init() {

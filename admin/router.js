@@ -9,7 +9,7 @@ Controller.init().then(controller => {
     });
 
     router.get("/", async (req, res) => {
-        res.status(200).send([]);
+        res.status(200).send(await controller.getBots());
     });
 
     router.get("/:id", async (req, res) => {
