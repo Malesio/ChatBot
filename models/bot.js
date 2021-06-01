@@ -1,7 +1,10 @@
 class Bot{
 
     constructor(data){
-        
+
+        this.brain = [];
+        this.interface = [];
+
         if(undefined != data.id){
             this.id = data.id;
         }
@@ -11,19 +14,12 @@ class Bot{
         if(undefined != data.surname){
             this.surname = data.surname;
         }
-        if(undefined != data.brain){
-            this.brain = data.brain;
-        }
-        if(undefined != data.interface){
-            this.interface = data.interface;
-        }
         if(undefined != data.personality){
             this.personality = data.personality;
         }
-        if(undefined != data.status){
-            this.status = data.status;
-        }
         
+        this.brain.push("standard");
+        this.interface.push("standard");
     }
 
 }
