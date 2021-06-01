@@ -1,12 +1,16 @@
 const express = require("express");
+const axios = require("axios");
+const path = require("path");
 
 const app = express();
 const port = process.env["CHATBOT_INTERFACE_PORT"] || 3000;
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname,'/view'));
 app.use(express.static(__dirname+'/public'));
 
 app.get("/", async (req, res) => {
-    res.status(200).send({message: "Chat interface running"});
+    const list = await axios.get("http://localhost:7777/chatbot");
+    res.status(200).render("index", {botList: list.data});
 });
 
 app.post("/:id", async(req, res) => {
