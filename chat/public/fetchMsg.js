@@ -1,8 +1,9 @@
-let intervalID = window.setInterval(withFetch, 1000);
+let intervalID = window.setInterval(fetchMsg, 1000);
 let div = document.getElementsByClassName("conversation-container")[0];
+let id = document.getElementById("botId");
 
-function withFetch(callback){
-    fetch("http://localhost:3000")
+function fetchMsg(callback){
+    fetch("http://localhost:3000/" + id.textContent)
     .then(function(response){
         return response.json();
     })

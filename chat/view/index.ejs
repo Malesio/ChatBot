@@ -12,9 +12,13 @@
   <body>
       <p>Veuillez sélectionner un bot avec lequel discuter</p>
       <ul>
-          <% for(int i=botList.size()/2; i<botList.size(); i++){ %>
-            <li>
-              <% botList.get(i).getName %>
+          <% for(int i=botList.size()/2; i<botList.size(); i++){ 
+              id = botList.get(i).getId();
+            %>
+            <li class="bot">
+              <a href="/bot/" <%= id %>></a>
+                <% botList.get(i).getName() %>
+              </a>
             </li>
           <% } %>
       </ul>
