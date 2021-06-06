@@ -11,7 +11,7 @@ function newMessageSent(e) {
 	if (input.value) {
 		let message = buildMessage(input.value, 'message_sent');
 		conversation.appendChild(message);
-		newMessageReception();
+		newMessageReception(input.value);
 	}
 
 	input.value = '';
@@ -20,15 +20,24 @@ function newMessageSent(e) {
 	e.preventDefault();
 }
 
-function newMessageReception() {
+function newMessageReception(userMsg) {
 	let id = document.getElementById("botId");
-	fetch("http://localhost:3000/" + id.textContent)
+	const options = {
+		method: "POST",
+		body: JSON.stringify({msg: userMsg}),
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		}
+	}
+
+	fetch("http://localhost:3000/bot/" + id.textContent.trim(), options)
     .then(function(response){
         return response.json();
     })
 	.then(function(response){
 		if (response.msg) {
-			let message = buildMessage('message_received');
+			let message = buildMessage(response.msg, 'message_received');
 			conversation.appendChild(message);
 		}
 		conversation.scrollTop = conversation.scrollHeight;
