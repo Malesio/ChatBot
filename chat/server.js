@@ -19,7 +19,8 @@ app.post("/bot/:id", async(req, res) => {
 });
 
 app.get("/bot/:id", async(req, res) => {
-    res.status(200).render("botChat", {botId: req.params.id});
+    const name = await axios.get(`http://localhost:7777/chatbot/${req.params.id}`);
+    res.status(200).render("botChat", {botId: req.params.id, botName: name.data.name});
 })
 
 module.exports = () => {

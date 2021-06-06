@@ -13,13 +13,17 @@ html{
 }
 
 table{
-    min-width: 80%;
+    min-width: 50%;
     cursor: default;
     border-collapse: collapse;
     margin-bottom: 5vh;
     margin-left: 1.2vw
 }
 
+th, td{
+    text-align: center;
+    padding: 1vw;
+}
 
 /* Chatbot page */
 
