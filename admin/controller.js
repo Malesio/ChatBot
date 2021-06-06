@@ -3,11 +3,14 @@ require("dotenv").config();
 const Low = require("lowdb");
 const FileAsync = require("lowdb/adapters/FileAsync");
 const Bot = require("../models/bot");
+const fs = require("fs");
+const DiscordBot = require("./discord/bot");
 
 class ChatbotController {
 
     constructor(database) {
         this.db = database;
+        this.discordClient = new DiscordBot();
     }
 
     async createBot(botData) {
@@ -56,6 +59,50 @@ class ChatbotController {
         }
 
         return false;
+    }
+
+    async addBrain(botId, brain) {
+        if (!brain) {
+            throw new Error("No brain specified");
+        }
+
+        const availableBrains = fs.readdirSync(__dirname + "/../brains").map(b => b.slice(0, b.indexOf(".")));
+
+        if (!availableBrains.includes(brain)) {
+            throw new Error(`Brain ${brain} not found in brain library`);
+        }
+
+        const brains = this.db.get("bots").find({id: parseInt(botId, 10)}).get("brain");
+
+        if (brains.value().includes(brain)) {
+            throw new Error(`Bot already has ${brain} brain`);
+        }
+
+        await brains.push(brain).write();
+    }
+
+    async addDiscordInterface(botId) {
+        const interfaces = this.db.get("bots").find({id: parseInt(botId, 10)}).get("interface");
+
+        if (interfaces.value().includes("discord")) {
+            throw new Error("Bot already has a Discord interface");
+        }
+
+        this.discordClient.run();
+
+        await interfaces.push("discord").write();
+    }
+
+    async deleteDiscordInterface(botId) {
+        const interfaces = this.db.get("bots").find({id: parseInt(botId, 10)}).get("interface");
+
+        if (!interfaces.value().includes("discord")) {
+            throw new Error("Bot does not have a Discord interface");
+        }
+
+        this.discordClient.stop();
+
+        await interfaces.pull("discord").write();
     }
 
     static async init() {
