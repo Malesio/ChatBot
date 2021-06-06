@@ -4,24 +4,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
 
-    <title>Chat</title>
+    <title>Welcome</title>
 
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
 
   <body>
       <p>Veuillez sélectionner un bot avec lequel discuter</p>
-      <ul>
-          <% for(let i=0; i < botList.length; i++){ 
-              let id = botList[i].id;
-            %>
-            <li class="bot">
-              <a href="/bot/<%= id %>">
-                <%= botList[i].name %>
-              </a>
-            </li>
-          <% } %>
-      </ul>
+      <table style="width: 100%; border-collapse: collapse">
+        <thead>
+        <tr>
+            <th></th>
+            <th scope="col">Nom</th>
+            <th scope="col">Cerveau</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <% for(let i=0; i < botList.length; i++){ 
+          let id = botList[i].id;
+        %>
+        <tr>
+          <td>
+            <a href="/bot/<%= id %>">
+              <%= botList[i].name %>
+            </a>
+          </td>
+          <td>
+            <%= botList[i].brain %>
+          </td>
+        </tr>
+        <% } %>
+      </table>
   </body>
 
 </html>

@@ -12,7 +12,7 @@ function fetchMsg(callback){
            let newMsg = document.createElement("div");
             newMsg.classList.add("message_received");
             newMsg.innerText = json.msg;
-            div.appendChild(newMsg);  
+            conversation.appendChild(newMsg);  
         }
        
     })
