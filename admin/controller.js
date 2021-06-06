@@ -11,6 +11,14 @@ class ChatbotController {
     }
 
     async createBot(botData) {
+        if (!botData) {
+            throw new Error("Missing bot data");
+        }
+
+        if (!botData.name) {
+            throw new Error("Missing bot name");
+        }
+
         const newId = this.db.get("next_id").value();
         botData.id = newId;
 
@@ -21,9 +29,33 @@ class ChatbotController {
     }
 
     async getBots() {
-        const bots = await this.db.get("bots");
-        
-        return bots.map(e => new Bot(e));
+        return await this.db.get("bots").value();
+    }
+
+    async getBot(botId) {
+        botId = parseInt(botId, 10);
+        if (isNaN(botId)) {
+            throw new Error("Invalid bot ID");
+        }
+
+        return this.db.get("bots").find({id: botId}).value();
+    }
+
+    async deleteBot(botId) {
+        botId = parseInt(botId, 10);
+        if (isNaN(botId)) {
+            throw new Error("Invalid bot ID");
+        }
+
+        const bots = this.db.get("bots");
+
+        if (bots.find({id: botId}).value()) {
+            await bots.remove({id: botId}).write();
+
+            return true;
+        }
+
+        return false;
     }
 
     static async init() {
