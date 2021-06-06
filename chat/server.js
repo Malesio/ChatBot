@@ -13,7 +13,7 @@ app.get("/", async (req, res) => {
     res.status(200).render("index", {botList: list.data});
 });
 
-app.post("/:id", async(req, res) => {
+app.post("/bot/:id", async(req, res) => {
     res.status(200).send({message: req.body.msg});
 });
 

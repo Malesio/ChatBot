@@ -1,31 +1,17 @@
-/* Time */
-
-let messageTime = document.querySelectorAll('.message .time');
-
-deviceTime.innerHTML = moment().format('h:mm');
-
-setInterval(function() {
-	deviceTime.innerHTML = moment().format('h:mm');
-}, 1000);
-
-for (let i = 0; i < messageTime.length; i++) {
-	messageTime[i].innerHTML = moment().format('h:mm A');
-}
-
 /* Message */
 
 let form = document.querySelector('.conversation-compose');
 let conversation = document.querySelector('.conversation-container');
 
-form.addEventListener('submit', newMessage);
+form.addEventListener('submit', newMessageSent);
 
-function newMessage(e) {
+function newMessageSent(e) {
 	let input = e.target.input;
 
 	if (input.value) {
-		let message = buildMessage(input.value);
+		let message = buildMessage(input.value, 'message_sent');
 		conversation.appendChild(message);
-		animateMessage(message);
+		newMessageReception();
 	}
 
 	input.value = '';
@@ -34,18 +20,26 @@ function newMessage(e) {
 	e.preventDefault();
 }
 
-function buildMessage(text) {
+function newMessageReception() {
+	let id = document.getElementById("botId");
+	fetch("http://localhost:3000/" + id.textContent)
+    .then(function(response){
+        return response.json();
+    })
+	.then(function(response){
+		if (response.msg) {
+			let message = buildMessage('message_received');
+			conversation.appendChild(message);
+		}
+		conversation.scrollTop = conversation.scrollHeight;
+	});
+}
+
+function buildMessage(text, type) {
 	let element = document.createElement('div');
 
-	element.classList.add('message', 'sent');
+	element.classList.add(type);
 	element.innerHTML = text;
 
 	return element;
-}
-
-function animateMessage(message) {
-	setTimeout(function() {
-		let tick = message.querySelector('.tick');
-		tick.classList.remove('tick-animation');
-	}, 500);
 }
