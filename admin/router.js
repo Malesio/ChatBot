@@ -71,7 +71,7 @@ Controller.init().then(controller => {
             const bot = await controller.getBot(req.params.id);
             if (bot) {
                 await controller.addDiscordInterface(bot.id);
-                res.status(200).send({invite: "<discord invite link here>"});
+                res.status(200).send({invite: "https://discord.com/api/oauth2/authorize?client_id=851432387618275370&permissions=3072&scope=bot"});
             } else {
                 res.status(404).send({error: `Could not find chatbot with id ${req.params.id}`});
             }
