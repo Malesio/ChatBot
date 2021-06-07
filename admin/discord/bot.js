@@ -19,10 +19,6 @@ class Client {
     run() {
         this.client.login(process.env["DISCORD_BOT_TOKEN"]);
     }
-
-    stop() {
-        this.client.destroy();
-    }
 }
 
 module.exports = Client;
