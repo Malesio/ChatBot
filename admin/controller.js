@@ -99,7 +99,7 @@ class ChatbotController {
 
         this.discordClient.activeBot = botId;
 
-        await interfaces.push("discord").write();
+        await this.db.get("bots").find({id: botId}).get("interface").push("discord").write();
     }
 
     async deleteDiscordInterface(botId) {
@@ -111,7 +111,7 @@ class ChatbotController {
 
         this.discordClient.activeBot = -1;
 
-        await interfaces.pull("discord").write();
+        await this.db.get("bots").find({id: botId}).get("interface").pull("discord").write();
     }
 
     async postMessage(botId, userName, message) {
@@ -131,6 +131,9 @@ class ChatbotController {
         const bots = await instance.getBots();
         await Promise.all(bots.map(async (bot) => {
             await dataController.createRiveInstance(bot);
+            if (bot.interface.includes("discord")) {
+                instance.discordClient.activeBot = bot.id;
+            }
         }));
 
         return instance;
