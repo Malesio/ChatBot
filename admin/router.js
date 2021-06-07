@@ -24,6 +24,12 @@ Controller.init().then(controller => {
         res.status(200).send(await controller.getBots());
     });
 
+    router.get("/brains", cors(corsOptions), async (req, res) => {
+        const brains = fs.readdirSync(__dirname + "/../brains");
+    
+        res.status(200).send({brains: brains.map(b => b.slice(0, b.indexOf(".")))});
+    });
+
     router.get("/:id", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
@@ -51,12 +57,6 @@ Controller.init().then(controller => {
         } catch (e) {
             res.status(400).send({error: e.message});
         }
-    });
-
-    router.get("/brains", cors(corsOptions), async (req, res) => {
-        const brains = fs.readdirSync(__dirname + "/../brains");
-    
-        res.status(200).send({brains: brains.map(b => b.slice(0, b.indexOf(".")))});
     });
 
     router.put("/:id/brain", cors(corsOptions), async (req, res) => {
