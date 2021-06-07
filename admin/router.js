@@ -8,7 +8,7 @@ const corsOptions = {
     origin: "http://localhost:3000",
     methods: "GET,POST,PUT,DELETE,PATCH",
     optionsSuccessStatus: 200
-}
+};
 
 Controller.init().then(controller => {    
     router.post("/", cors(corsOptions), async (req, res) => {
