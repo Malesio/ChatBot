@@ -42,6 +42,7 @@ app.post("/bot/:id", async(req, res) => {
 app.get("/bot/:id", async(req, res) => {
     if (!req.cookies.login) {
         res.redirect("/");
+        return;
     }
 
     const name = await axios.get(`http://localhost:${adminPort}/chatbot/${req.params.id}`);
