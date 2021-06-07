@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const low = require("lowdb");
 const FileAsync = require("lowdb/adapters/FileAsync");
-const {default: RiveScript} = require("rivescript");
+const RiveScript = require("rivescript");
 
 class DataController {
     constructor(db) {
@@ -41,14 +41,14 @@ class DataController {
         const userData = this.db.get(`userdata.${userName}`).value();
 
         if (userData) {
-            this.riveInstances.get(botId).setUservars(userName, userData);
+            await this.riveInstances.get(botId).setUservars(userName, userData);
         }
     }
 
     async saveUserData(botId, userName) {
-        const userVars = this.riveInstances.get(botId).getUservars(userName);
+        const userVars = await this.riveInstances.get(botId).getUservars(userName);
 
-        await this.db.get(`userdata.${userName}`).assign(userVars).write();
+        await this.db.set(`userdata.${userName}`, userVars).write();
     }
 
     static async init() {
