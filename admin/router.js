@@ -1,10 +1,17 @@
 const fs = require("fs");
 const express = require("express");
+const cors = require("cors");
 const Controller = require("./controller");
 const router = express.Router();
 
+const corsOptions = {
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE,PATCH",
+    optionsSuccessStatus: 200
+}
+
 Controller.init().then(controller => {    
-    router.post("/", async (req, res) => {
+    router.post("/", cors(corsOptions), async (req, res) => {
         try {
             await controller.createBot(req.body);
             res.status(201).send({message: "Chatbot created"});
@@ -13,11 +20,11 @@ Controller.init().then(controller => {
         }
     });
 
-    router.get("/", async (req, res) => {
+    router.get("/", cors(corsOptions), async (req, res) => {
         res.status(200).send(await controller.getBots());
     });
 
-    router.get("/:id", async (req, res) => {
+    router.get("/:id", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
             if (bot) {
@@ -30,11 +37,11 @@ Controller.init().then(controller => {
         }
     });
 
-    router.delete("/", async (req, res) => {
+    router.delete("/", cors(corsOptions), async (req, res) => {
         res.sendStatus(405);
     });
 
-    router.delete("/:id", async (req, res) => {
+    router.delete("/:id", cors(corsOptions), async (req, res) => {
         try {
             if (await controller.deleteBot(req.params.id)) {
                 res.sendStatus(204);
@@ -46,13 +53,13 @@ Controller.init().then(controller => {
         }
     });
 
-    router.get("/brains", async (req, res) => {
+    router.get("/brains", cors(corsOptions), async (req, res) => {
         const brains = fs.readdirSync(__dirname + "/../brains");
     
         res.status(200).send({brains: brains.map(b => b.slice(0, b.indexOf(".")))});
     });
 
-    router.put("/:id/brain", async (req, res) => {
+    router.put("/:id/brain", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
             if (bot) {
@@ -66,7 +73,7 @@ Controller.init().then(controller => {
         }
     });
 
-    router.put("/:id/interface/discord", async (req, res) => {
+    router.put("/:id/interface/discord", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
             if (bot) {
@@ -80,7 +87,7 @@ Controller.init().then(controller => {
         }
     });
 
-    router.delete("/:id/interface/discord", async (req, res) => {
+    router.delete("/:id/interface/discord", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
             if (bot) {

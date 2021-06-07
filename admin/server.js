@@ -1,11 +1,13 @@
 const express = require("express");
 const router = require("./router");
+const cors = require("cors");
 
 require("dotenv").config();
 
 const app = express();
 const port = process.env["CHATBOT_ADMIN_PORT"] || 7777;
 
+app.use(cors());
 app.use(express.json());
 app.use("/chatbot", router);
 
