@@ -80,7 +80,7 @@ class ChatbotController {
             throw new Error(`Bot already has ${brain} brain`);
         }
 
-        await brains.push(brain).write();
+        await this.db.get("bots").find({id: bot.id}).get("brain").push(brain).write();
         await this.dataController.reloadRiveInstance(bot);
     }
 
