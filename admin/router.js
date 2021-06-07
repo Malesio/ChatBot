@@ -73,6 +73,20 @@ Controller.init().then(controller => {
         }
     });
 
+    router.post("/:id/message", cors(corsOptions), async (req, res) => {
+        try {
+            const bot = await controller.getBot(req.params.id);
+            if (bot) {
+                const reply = await controller.postMessage(bot.id, req.body.username, req.body.message);
+                res.status(200).send({reply: reply});
+            } else {
+                res.status(404).send({error: `Could not find chatbot with id ${req.params.id}`});
+            }
+        } catch (e) {
+            res.status(400).send({error: e.message});
+        }
+    });
+
     router.put("/:id/interface/discord", cors(corsOptions), async (req, res) => {
         try {
             const bot = await controller.getBot(req.params.id);
