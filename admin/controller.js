@@ -5,12 +5,15 @@ const FileAsync = require("lowdb/adapters/FileAsync");
 const Bot = require("../models/bot");
 const fs = require("fs");
 const DiscordBot = require("./discord/bot");
+const DataController = require("./dataController");
 
 class ChatbotController {
 
-    constructor(database) {
+    constructor(database, dataController) {
         this.db = database;
-        this.discordClient = new DiscordBot();
+        this.dataController = dataController;
+
+        this.discordClient = new DiscordBot(dataController);
         this.discordClient.run();
     }
 
@@ -27,13 +30,15 @@ class ChatbotController {
         botData.id = newId;
 
         const newBot = new Bot(botData);
+        
+        await this.dataController.createRiveInstance(newBot);
 
         await this.db.get("bots").push(newBot).write();
         await this.db.set("next_id", newId + 1).write();
     }
 
     async getBots() {
-        return await this.db.get("bots").value();
+        return this.db.get("bots").value();
     }
 
     async getBot(botId) {
@@ -48,6 +53,7 @@ class ChatbotController {
     async deleteBot(botId) {
         if (await this.getBot(botId)) {
             await this.db.get("bots").remove({id: botId}).write();
+            await this.dataController.deleteRiveInstance(botId);
 
             return true;
         }
@@ -66,13 +72,15 @@ class ChatbotController {
             throw new Error(`Brain ${brain} not found in brain library`);
         }
 
-        const brains = (await this.getBot(botId)).brain;
+        const bot = await this.getBot(botId);
+        const brains = bot.brain;
 
         if (brains.includes(brain)) {
             throw new Error(`Bot already has ${brain} brain`);
         }
 
         await brains.push(brain).write();
+        await this.dataController.reloadRiveInstance(bot);
     }
 
     async addDiscordInterface(botId) {
@@ -82,7 +90,14 @@ class ChatbotController {
             throw new Error("Bot already has a Discord interface");
         }
 
-        // TODO: allow bot to chat on discord
+        const bots = await this.getBots();
+        bots.forEach(b => {
+            if (b.interface.includes("discord")) {
+                throw new Error(`Discord interface already used by ${b.name}`);
+            }
+        });
+
+        this.discordClient.activeBot = botId;
 
         await interfaces.push("discord").write();
     }
@@ -94,7 +109,14 @@ class ChatbotController {
             throw new Error("Bot does not have a Discord interface");
         }
 
+        this.discordClient.activeBot = -1;
+
         await interfaces.pull("discord").write();
+    }
+
+    async postMessage(botId, userName, message) {
+        const bot = await this.getBot(botId);
+        return await this.dataController.getBotReply(bot.id, userName, message);
     }
 
     static async init() {
@@ -103,7 +125,13 @@ class ChatbotController {
 
         await db.defaults({ bots: [], next_id: 0 }).write();
 
-        const instance = new ChatbotController(db);
+        const dataController = await DataController.init();
+        const instance = new ChatbotController(db, dataController);
+
+        const bots = await instance.getBots();
+        await Promise.all(bots.map(async (bot) => {
+            await dataController.createRiveInstance(bot);
+        }));
 
         return instance;
     }
