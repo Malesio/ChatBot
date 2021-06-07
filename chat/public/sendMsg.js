@@ -22,9 +22,11 @@ function newMessageSent(e) {
 
 function newMessageReception(userMsg) {
 	let id = document.getElementById("botId");
+	let login = document.getElementById("login");
+
 	const options = {
 		method: "POST",
-		body: JSON.stringify({msg: userMsg}),
+		body: JSON.stringify({msg: userMsg, login: login.textContent.trim()}),
 		headers: {
 			"Accept": "application/json",
 			"Content-Type": "application/json"
