@@ -51,9 +51,10 @@ class ChatbotController {
     }
 
     async deleteBot(botId) {
-        if (await this.getBot(botId)) {
-            await this.db.get("bots").remove({id: botId}).write();
-            await this.dataController.deleteRiveInstance(botId);
+        const bot = await this.getBot(botId);
+        if (bot) {
+            await this.db.get("bots").remove({id: bot.id}).write();
+            await this.dataController.deleteRiveInstance(bot.id);
 
             return true;
         }
@@ -84,7 +85,8 @@ class ChatbotController {
     }
 
     async addDiscordInterface(botId) {
-        const interfaces = (await this.getBot(botId)).interface;
+        const bot = await this.getBot(botId);
+        const interfaces = bot.interface;
 
         if (interfaces.includes("discord")) {
             throw new Error("Bot already has a Discord interface");
@@ -97,13 +99,14 @@ class ChatbotController {
             }
         });
 
-        this.discordClient.activeBot = botId;
+        this.discordClient.activeBot = bot.id;
 
-        await this.db.get("bots").find({id: botId}).get("interface").push("discord").write();
+        await this.db.get("bots").find({id: bot.id}).get("interface").push("discord").write();
     }
 
     async deleteDiscordInterface(botId) {
-        const interfaces = (await this.getBot(botId)).interface;
+        const bot = await this.getBot(botId);
+        const interfaces = bot.interface;
 
         if (!interfaces.includes("discord")) {
             throw new Error("Bot does not have a Discord interface");
@@ -111,7 +114,7 @@ class ChatbotController {
 
         this.discordClient.activeBot = -1;
 
-        await this.db.get("bots").find({id: botId}).get("interface").pull("discord").write();
+        await this.db.get("bots").find({id: bot.id}).get("interface").pull("discord").write();
     }
 
     async postMessage(botId, userName, message) {
