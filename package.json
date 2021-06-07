@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Malesio/ChatBot#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.2",
