@@ -15,7 +15,6 @@ class Client {
     gotMessage(message) {
         if (message.content.startsWith(this.prefix) && !message.author.bot && this.activeBot !== -1) {
             const userMessage = message.content.slice(this.prefix.length);
-            // TODO: submit the user's message to Rivescript
             this.dataController.getBotReply(this.activeBot, message.author.username, userMessage)
                 .then(message.channel.send);
         }
